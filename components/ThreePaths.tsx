@@ -43,7 +43,7 @@ export default function ThreePaths({
       {/* DÁREK: Cesta ke průvodkyni dokončena (MOCK: v produkci se voucher
           uplatní přes Spirio; tady jen odkaz s UTM a poděkování) */}
       {giftOpen && (
-        <div className="relative overflow-hidden rounded-2xl border border-gold/60 bg-night-soft p-5 shadow-[0_0_32px_rgba(212,175,55,0.18)]">
+        <div className="relative overflow-hidden rounded-2xl border border-gold/60 bg-night-soft p-5 shadow-[0_0_32px_rgba(240,66,110,0.18)]">
           <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#3B0764] to-[#BE185D]" />
           <p className="text-[11px] uppercase tracking-wider text-gold-soft">
             Cesta ke průvodkyni · dokončena
@@ -62,7 +62,7 @@ export default function ThreePaths({
               setGuideGiftUsed();
               setGiftUsed(true);
             }}
-            className="mt-4 inline-block rounded-xl bg-gold px-6 py-3 font-medium text-night hover:bg-gold-soft"
+            className="mt-4 inline-block rounded-xl bg-love px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90"
           >
             Vybrat průvodkyni · 10 minut zdarma
           </a>

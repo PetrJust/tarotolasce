@@ -7,8 +7,31 @@ import { CardBack } from "@/components/TarotCard";
 export const metadata: Metadata = {
   title: "Tarot o Lásce: AI tarotový výklad o lásce za 29 Kč",
   description:
-    "Polož otázku, vyber si karty a dostaň osobní výklad o lásce a vztazích. První výklad za 29 Kč, karta dne zdarma. Výklady generuje AI.",
+    "Polož otázku, vyber si karty a AI kartářka Nomi ti napíše osobní výklad o lásce a vztazích. První výklad za 29 Kč, karta dne zdarma.",
   alternates: { canonical: "https://tarotolasce.cz/" },
+};
+
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Kdo mi karty vykládá?",
+      acceptedAnswer: { "@type": "Answer", text: "Všechny výklady vytváří Nomi, AI kartářka aplikace Tarot o Lásce. Není to člověk; je to umělá inteligence vyladěná na laskavé a osobní výklady o lásce." },
+    },
+    {
+      "@type": "Question",
+      name: "Kolik výklad stojí?",
+      acceptedAnswer: { "@type": "Answer", text: "První výklad stojí 29 Kč, další 49 Kč. Balíček 5 výkladů vychází na 199 Kč a 20 výkladů na 599 Kč. Karta dne je zdarma." },
+    },
+    {
+      "@type": "Question",
+      name: "Předpoví mi karty budoucnost?",
+      acceptedAnswer: { "@type": "Answer", text: "Ne. Tarot v aplikaci slouží jako nástroj reflexe: pomáhá utřídit pocity a vidět situaci jinak. Rozhodnutí zůstává na tobě." },
+    },
+  ],
 };
 
 const SAMPLES = [
@@ -46,9 +69,9 @@ export default function LandingPage() {
           Co ti dnes řeknou karty o lásce?
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-cream-dim">
-          Polož otázku, vyber si vlastníma rukama karty z vějíře a dostaneš
-          osobní výklad. Klidně, beze spěchu, jen pro tebe. První výklad za
-          29 Kč.
+          Jsem Nomi, tvoje AI kartářka. Polož mi otázku, vyber si vlastníma
+          rukama karty z vějíře a já ti je osobně vyložím. Klidně, beze
+          spěchu, jen pro tebe. První výklad za 29 Kč.
         </p>
       </section>
 
@@ -62,8 +85,8 @@ export default function LandingPage() {
           Karta dne zdarma
         </h2>
         <p className="mt-2 text-cream-dim">
-          Každý den jedna karta a krátký vzkaz pro tvoje srdce. Bez placení,
-          bez závazků.
+          Každý den ti Nomi otočí jednu kartu a napíše krátký vzkaz pro tvoje
+          srdce. Bez placení, bez závazků.
         </p>
         <Link
           href="/karta-dne"
@@ -159,6 +182,43 @@ export default function LandingPage() {
               </footer>
             </blockquote>
           ))}
+        </div>
+      </section>
+
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      {/* FAQ (viditelné + FAQPage JSON-LD níže) */}
+      <section className="mt-14">
+        <h2 className="font-display text-2xl font-semibold text-cream">
+          Časté otázky
+        </h2>
+        <div className="mt-5 space-y-4">
+          <div className="rounded-2xl border border-night-line bg-night-soft/50 p-5">
+            <h3 className="font-medium text-cream">Kdo mi karty vykládá?</h3>
+            <p className="mt-1 text-sm text-cream-dim">
+              Všechny výklady vytváří Nomi, naše AI kartářka. Není to člověk;
+              je to umělá inteligence vyladěná na laskavé a osobní výklady o
+              lásce. Píše jen pro tebe, ke tvé otázce a tvým kartám.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-night-line bg-night-soft/50 p-5">
+            <h3 className="font-medium text-cream">Kolik výklad stojí?</h3>
+            <p className="mt-1 text-sm text-cream-dim">
+              První výklad stojí 29 Kč, další 49 Kč. Balíček 5 výkladů vychází
+              na 199 Kč a 20 výkladů na 599 Kč. Karta dne je každý den zdarma.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-night-line bg-night-soft/50 p-5">
+            <h3 className="font-medium text-cream">Předpoví mi karty budoucnost?</h3>
+            <p className="mt-1 text-sm text-cream-dim">
+              Ne, a ani se o to nesnažíme. Tarot u nás slouží jako zrcadlo:
+              pomáhá ti utřídit pocity a vidět situaci jinýma očima. Rozhodnutí
+              zůstává vždycky na tobě.
+            </p>
+          </div>
         </div>
       </section>
 

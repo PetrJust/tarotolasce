@@ -38,7 +38,7 @@ export default function QuestionBox() {
       <button
         onClick={() => go(q)}
         disabled={!q.trim()}
-        className="mt-5 w-full rounded-xl bg-gold px-6 py-4 text-lg font-medium text-night shadow-glow hover:bg-gold-soft disabled:opacity-40"
+        className="mt-5 w-full rounded-xl bg-love px-6 py-4 text-lg font-semibold text-white shadow-glow transition-opacity hover:opacity-90 disabled:opacity-40"
       >
         Vyložit karty
       </button>

@@ -267,7 +267,7 @@ export default function Ritual({
         {phase === "intro" && (
           <div className="flex h-full flex-col items-center justify-center gap-8 py-16 text-center">
             <p className="font-display text-3xl font-semibold text-cream">
-              Soustřeď se na svou otázku.
+              Soustřeď se na svou otázku. Nomi zamíchá karty.
             </p>
             <button
               onClick={() => doShuffle(true)}
@@ -303,7 +303,7 @@ export default function Ritual({
                 </motion.div>
               ))}
             </div>
-            <p className="text-cream-dim">Karty se míchají…</p>
+            <p className="text-cream-dim">Nomi míchá tvoje karty…</p>
           </div>
         )}
 

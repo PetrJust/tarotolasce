@@ -54,18 +54,18 @@ export default function KartaDnePage() {
     if (!ctx) return;
 
     const grad = ctx.createLinearGradient(0, 0, 0, 1920);
-    grad.addColorStop(0, "#140C28");
-    grad.addColorStop(0.5, "#1A1033");
-    grad.addColorStop(1, "#2D1B4E");
+    grad.addColorStop(0, "#1D0B33");
+    grad.addColorStop(0.5, "#2A1245");
+    grad.addColorStop(1, "#4A2070");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 1080, 1920);
 
     // Logo
-    ctx.fillStyle = "#F5F0E8";
+    ctx.fillStyle = "#FFF3EE";
     ctx.font = "600 64px Georgia, serif";
     ctx.textAlign = "center";
     ctx.fillText("Tarot o Lásce", 540, 220);
-    ctx.fillStyle = "#D4AF37";
+    ctx.fillStyle = "#F0426E";
     ctx.font = "44px Georgia, serif";
     ctx.fillText("Karta dne", 540, 300);
 
@@ -74,16 +74,16 @@ export default function KartaDnePage() {
     const ch = 860;
     const cx = (1080 - cw) / 2;
     const cy = 420;
-    ctx.fillStyle = "#F5F0E8";
+    ctx.fillStyle = "#FFF3EE";
     ctx.beginPath();
     ctx.roundRect(cx, cy, cw, ch, 36);
     ctx.fill();
-    ctx.strokeStyle = "#1A1033";
+    ctx.strokeStyle = "#2A1245";
     ctx.lineWidth = 8;
     ctx.beginPath();
     ctx.roundRect(cx + 24, cy + 24, cw - 48, ch - 48, 24);
     ctx.stroke();
-    ctx.strokeStyle = "#D4AF37";
+    ctx.strokeStyle = "#F0426E";
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.roundRect(cx + 44, cy + 44, cw - 88, ch - 88, 16);
@@ -95,20 +95,20 @@ export default function KartaDnePage() {
       ctx.rotate(Math.PI);
       ctx.translate(-540, -(cy + ch / 2));
     }
-    ctx.fillStyle = "#2D1B4E";
+    ctx.fillStyle = "#4A2070";
     ctx.font = "220px Georgia, serif";
     ctx.fillText(card.symbol ?? "✦", 540, cy + ch / 2 + 40);
-    ctx.fillStyle = "#1A1033";
+    ctx.fillStyle = "#2A1245";
     ctx.font = "600 52px Georgia, serif";
     ctx.fillText(card.name, 540, cy + ch - 110);
     ctx.restore();
 
-    ctx.fillStyle = "#C9BFAF";
+    ctx.fillStyle = "#E3C9CF";
     ctx.font = "40px Georgia, serif";
     ctx.fillText(card.reversed ? `${card.name} (obráceně)` : card.name, 540, cy + ch + 110);
 
     // Doména
-    ctx.fillStyle = "#D4AF37";
+    ctx.fillStyle = "#F0426E";
     ctx.font = "600 48px Georgia, serif";
     ctx.fillText("tarotolasce.cz", 540, 1800);
 
@@ -128,6 +128,7 @@ export default function KartaDnePage() {
       <h1 className="font-display text-4xl font-semibold text-cream">
         Karta dne
       </h1>
+      <p className="mt-2 text-sm text-cream-dim">Vybírá a vykládá AI kartářka Nomi</p>
 
       {phase === "intro" && (
         <div className="mt-6">

@@ -13,7 +13,7 @@ export default function Footer() {
           <Link href="/reklamace" className="hover:text-cream">Reklamace</Link>
         </nav>
         <p>
-          18+ · Výklady generuje AI · Provozovatel: {"{TODO}"}
+          18+ · Všechny výklady vytváří AI kartářka Nomi · Provozovatel: {"{TODO}"}
         </p>
         <p>
           Tarot o Lásce je nástroj reflexe pro zábavu a sebepoznání. Nenahrazuje

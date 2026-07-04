@@ -23,11 +23,19 @@ export const metadata: Metadata = {
     template: "%s | Tarot o Lásce",
   },
   description:
-    "Polož otázku, vyber si karty a dostaň osobní tarotový výklad o lásce. První výklad za 29 Kč. Výklady generuje AI.",
+    "Polož otázku, vyber si karty a dostaň osobní tarotový výklad o lásce od AI kartářky Nomi. První výklad za 29 Kč.",
   openGraph: {
     siteName: "Tarot o Lásce",
     locale: "cs_CZ",
     type: "website",
+    description:
+      "Osobní tarotové výklady o lásce od AI kartářky Nomi. První výklad za 29 Kč, karta dne zdarma.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tarot o Lásce: AI tarotové výklady o lásce",
+    description:
+      "Osobní tarotové výklady o lásce od AI kartářky Nomi. První výklad za 29 Kč.",
   },
 };
 
@@ -37,7 +45,17 @@ const orgJsonLd = {
   name: "Tarot o Lásce",
   url: SITE_URL,
   description:
-    "Česká aplikace pro AI tarotové výklady zaměřené na lásku a vztahy.",
+    "Česká aplikace pro AI tarotové výklady zaměřené na lásku a vztahy. Všechny výklady vytváří AI kartářka Nomi.",
+};
+
+const webSiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Tarot o Lásce",
+  url: SITE_URL,
+  inLanguage: "cs",
+  description:
+    "Osobní tarotové výklady o lásce od AI kartářky Nomi.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -47,6 +65,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
         />
         <Header />
         <main className="mx-auto w-full max-w-3xl px-4 pb-24">{children}</main>

@@ -22,8 +22,8 @@ export default function Image() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(180deg, #140C28 0%, #2D1B4E 100%)",
-          color: "#F5F0E8",
+          background: "linear-gradient(180deg, #1D0B33 0%, #4A2070 100%)",
+          color: "#FFF3EE",
           fontFamily: "Georgia, serif",
         }}
       >
@@ -35,11 +35,11 @@ export default function Image() {
             gap: 18,
           }}
         >
-          <div style={{ fontSize: 34, color: "#D4AF37", letterSpacing: 4 }}>
+          <div style={{ fontSize: 34, color: "#F0426E", letterSpacing: 4 }}>
             KARTA DNE
           </div>
           <div style={{ fontSize: 92, fontWeight: 600 }}>{card.name}</div>
-          <div style={{ fontSize: 30, color: "#C9BFAF" }}>
+          <div style={{ fontSize: 30, color: "#E3C9CF" }}>
             tarotolasce.cz
           </div>
         </div>

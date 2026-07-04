@@ -7,14 +7,14 @@
 }
 
 body {
-  background: linear-gradient(180deg, #140c28 0%, #1a1033 40%, #2d1b4e 100%);
+  background: linear-gradient(180deg, #1d0b33 0%, #2a1245 45%, #4a2070 100%);
   background-attachment: fixed;
   color: #f5f0e8;
   min-height: 100dvh;
 }
 
 ::selection {
-  background: rgba(212, 175, 55, 0.35);
+  background: rgba(240, 66, 110, 0.4);
 }
 
 a,

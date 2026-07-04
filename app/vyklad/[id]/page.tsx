@@ -34,7 +34,10 @@ export default async function SavedReadingPage({ params }: { params: { id: strin
         ))}
       </div>
 
-      <div className="prose-tarot mx-auto mt-8 max-w-xl text-lg leading-relaxed text-cream">
+      <p className="mx-auto mt-8 max-w-xl text-xs uppercase tracking-wider text-gold-soft">
+        Výklad od Nomi, tvé AI kartářky
+      </p>
+      <div className="prose-tarot mx-auto mt-2 max-w-xl text-lg leading-relaxed text-cream">
         {reading.text}
       </div>
 
