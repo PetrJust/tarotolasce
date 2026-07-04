@@ -1,0 +1,52 @@
+// Uložený výklad (z historie / e-mailu). Server component, čte in-memory store.
+import { notFound } from "next/navigation";
+import { getReading } from "@/lib/store";
+import ThreePaths from "@/components/ThreePaths";
+import ReadingFeedback from "@/components/ReadingFeedback";
+
+export const dynamic = "force-dynamic";
+
+export default async function SavedReadingPage({ params }: { params: { id: string } }) {
+  const reading = await getReading(params.id);
+  if (!reading) notFound();
+
+  return (
+    <article className="py-10">
+      <p className="text-sm text-cream-dim">
+        {new Date(reading.createdAt).toLocaleDateString("cs-CZ")} ·{" "}
+        {reading.spreadName}
+      </p>
+      <h1 className="mt-2 font-display text-3xl font-semibold text-cream">
+        „{reading.question}"
+      </h1>
+
+      <div className="mx-auto mt-8 grid max-w-xl grid-cols-3 gap-3">
+        {reading.cards.map((c) => (
+          <div key={c.position} className="text-center">
+            <span className="text-[11px] leading-tight text-gold-soft">{c.position}</span>
+            <div className="mt-1 rounded-lg border border-night-line bg-cream/95 p-2 text-night">
+              <span className="block text-[11px] font-medium leading-tight">
+                {c.name}
+                {c.reversed ? " (obráceně)" : ""}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="prose-tarot mx-auto mt-8 max-w-xl text-lg leading-relaxed text-cream">
+        {reading.text}
+      </div>
+
+      <ReadingFeedback readingId={reading.id} />
+
+      <ThreePaths spread={reading.spreadKey} credits={0} singlePurchases={0} />
+
+      <p className="mt-10 border-t border-night-line/60 pt-6 text-center text-xs text-cream-dim">
+        Tarot o Lásce je nástroj reflexe pro zábavu a sebepoznání. Nenahrazuje
+        profesionální terapii ani medicínskou péči. V krizi kontaktuj Linku
+        první psychické pomoci: 116 123.
+      </p>
+    </article>
+  );
+}

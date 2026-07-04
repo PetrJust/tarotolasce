@@ -1,0 +1,141 @@
+"use client";
+// 7.3 Konec výkladu: 3 cesty. Cesta 2 je SPIRIO CTA.
+// Navíc: „Cesta ke průvodkyni" (tichý ukazatel + dárek po 10. výkladu)
+// a jemná brzda při 3+ výkladech za den. Vše bez dark patterns:
+// dárek je dárek, brzda je péče, nic neblokujeme.
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import SpirioCTA, { spirioUrl } from "./SpirioCTA";
+import { vykladu } from "@/lib/declension";
+import {
+  getReadingCount, getTodayReads, isGuideGiftUsed, setGuideGiftUsed,
+} from "@/lib/clientState";
+
+const GIFT_AT = 10; // po kolikátém výkladu se otevře dárek
+
+export default function ThreePaths({
+  spread,
+  credits,
+  singlePurchases,
+}: {
+  spread: string;
+  credits: number;
+  singlePurchases: number;
+}) {
+  const prominent = spread === "my_ex";
+  const [reads, setReads] = useState(0);
+  const [todayReads, setTodayReads] = useState(0);
+  const [giftUsed, setGiftUsed] = useState(true); // než se načte, nic neukazuj
+
+  useEffect(() => {
+    setReads(getReadingCount());
+    setTodayReads(getTodayReads());
+    setGiftUsed(isGuideGiftUsed());
+  }, []);
+
+  const giftOpen = reads >= GIFT_AT && !giftUsed;
+  const calmDay = todayReads >= 3;
+
+  return (
+    <section className="mt-12 space-y-5">
+      <h2 className="font-display text-3xl font-semibold text-cream">Co dál?</h2>
+
+      {/* DÁREK: Cesta ke průvodkyni dokončena (MOCK: v produkci se voucher
+          uplatní přes Spirio; tady jen odkaz s UTM a poděkování) */}
+      {giftOpen && (
+        <div className="relative overflow-hidden rounded-2xl border border-gold/60 bg-night-soft p-5 shadow-[0_0_32px_rgba(212,175,55,0.18)]">
+          <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#3B0764] to-[#BE185D]" />
+          <p className="text-[11px] uppercase tracking-wider text-gold-soft">
+            Cesta ke průvodkyni · dokončena
+          </p>
+          <h3 className="mt-1 font-display text-2xl font-semibold text-cream">
+            Máš u nás dárek.
+          </h3>
+          <p className="mt-2 text-sm text-cream-dim">
+            Ptala ses karet už desetkrát. Některé otázky si zaslouží živého
+            člověka. Vyber si průvodkyni na Spiriu a prvních 10 minut máš od
+            nás zdarma. Bez podmínek, jen jako poděkování.
+          </p>
+          <a
+            href={spirioUrl(spread, "cesta10")}
+            onClick={() => {
+              setGuideGiftUsed();
+              setGiftUsed(true);
+            }}
+            className="mt-4 inline-block rounded-xl bg-gold px-6 py-3 font-medium text-night hover:bg-gold-soft"
+          >
+            Vybrat průvodkyni · 10 minut zdarma
+          </a>
+          <p className="mt-3 text-[11px] text-cream-dim">
+            Průvodkyně jako Tinja nebo Berkana · 4,8 z 5 ★ · Garance vrácení peněz.
+            Čas se počítá až od připojení průvodkyně.
+          </p>
+        </div>
+      )}
+
+      {/* Cesta 1 */}
+      <div className="rounded-2xl border border-night-line bg-night-soft/60 p-5">
+        <a
+          href="/vyklad/novy"
+          className="font-display text-xl font-semibold text-gold-soft hover:text-gold"
+        >
+          {credits > 0
+            ? `Vytáhnout si další karty · ${vykladu(credits)}`
+            : "Vytáhnout si další karty · 49 Kč"}
+        </a>
+        <p className="mt-2 text-sm text-cream-dim">
+          {calmDay
+            ? "Dnes už ses ptala třikrát. Karty potřebují klid a ty možná taky. Karta dne na tebe zítra počká zdarma."
+            : `Nová otázka, nové karty.${credits > 0 ? " Bez placení, z tvého balíčku." : " Platba na jedno klepnutí."}`}
+        </p>
+      </div>
+
+      {/* Cesta 2: Spirio */}
+      <SpirioCTA spread={spread} placement="3cesty" prominent={prominent} />
+
+      {/* Tichý ukazatel cesty (jen když dárek ještě čeká) */}
+      {!giftOpen && !giftUsed && reads > 0 && (
+        <div className="flex items-center justify-center gap-2 pt-1" title="Cesta ke průvodkyni">
+          <div className="flex gap-1.5" aria-hidden="true">
+            {Array.from({ length: GIFT_AT }).map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 w-1.5 rounded-full ${
+                  i < reads ? "bg-gold" : "bg-night-line"
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-[11px] text-cream-dim">
+            Cesta ke průvodkyni · {Math.min(reads, GIFT_AT)} z {GIFT_AT}
+          </span>
+        </div>
+      )}
+
+      {/* Cesta 3 */}
+      <div className="rounded-2xl border border-night-line bg-night-soft/60 p-5">
+        <Link
+          href="/historie"
+          className="font-display text-xl font-semibold text-cream hover:text-gold-soft"
+        >
+          Nechat si to na potom
+        </Link>
+        <p className="mt-2 text-sm text-cream-dim">
+          Výklad zůstává uložený. Kdykoli se k němu vrátíš ve své historii.
+        </p>
+      </div>
+
+      {/* Banner po 2. jednotlivém nákupu */}
+      {singlePurchases >= 2 && (
+        <div className="rounded-2xl border border-gold-dim/50 bg-night-soft p-5">
+          <p className="text-cream-dim">
+            Ptáš se ráda? 5 výkladů za 199 Kč vychází na 40 Kč za výklad.{" "}
+            <Link href="/cenik" className="font-medium text-gold-soft hover:text-gold">
+              Vybrat balíček
+            </Link>
+          </p>
+        </div>
+      )}
+    </section>
+  );
+}
