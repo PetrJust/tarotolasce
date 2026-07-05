@@ -1,13 +1,18 @@
+"use client";
 // 7.6 SPIRIO CTA. UTM: utm_source=tarotolasce&utm_medium=referral
 // &utm_content={spread}_{umisteni}
 export function spirioUrl(spread: string, placement: string): string {
   const params = new URLSearchParams({
     utm_source: "tarotolasce",
     utm_medium: "referral",
+    utm_campaign: "post_reading",
     utm_content: `${spread}_${placement}`,
   });
   return `https://spirio.cz/landing-TBD?${params.toString()}`;
 }
+
+import { logEvent } from "@/lib/analytics";
+import { getReadingCount } from "@/lib/clientState";
 
 export default function SpirioCTA({
   spread,
@@ -19,6 +24,8 @@ export default function SpirioCTA({
   prominent?: boolean;
 }) {
   const href = spirioUrl(spread, placement);
+  const onClick = () =>
+    logEvent("spirio_click", { placement, spread, readings: getReadingCount() });
 
   if (prominent) {
     return (
@@ -35,6 +42,7 @@ export default function SpirioCTA({
         </p>
         <a
           href={href}
+          onClick={onClick}
           className="mt-5 inline-block rounded-xl bg-gold px-6 py-3 font-medium text-night hover:bg-gold-soft"
         >
           Promluvit si s průvodkyní
@@ -59,6 +67,7 @@ export default function SpirioCTA({
       </p>
       <a
         href={href}
+        onClick={onClick}
         className="mt-4 inline-block rounded-xl border border-gold-dim px-5 py-2.5 text-sm text-gold-soft hover:border-gold"
       >
         Vybrat průvodkyni na Spirio

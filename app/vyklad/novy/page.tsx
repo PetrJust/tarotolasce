@@ -14,6 +14,8 @@ import { spirioUrl } from "@/components/SpirioCTA";
 import { SPREADS, SpreadKey, betweenUsPositions } from "@/lib/spreads";
 import { PRICES, PRICE_IDS } from "@/lib/pricing";
 import { vykladu } from "@/lib/declension";
+import { CREDITS_ENABLED } from "@/lib/flags";
+import { logEvent } from "@/lib/analytics";
 import {
   getCredits, setCredits, getSinglePurchases, bumpSinglePurchases,
   getFirstDone, setFirstDone, getEmail, setEmail as persistEmail,
@@ -54,6 +56,39 @@ function FlowInner() {
   const [processing, setProcessing] = useState(!!params.get("q")?.trim());
   const autoStarted = useRef(false);
   const countedRef = useRef(false); // výklad se počítá jen jednou
+  // Platforma pro brandované platební tlačítko (v1 §5): nikdy obě naráz
+  const [isApplePlatform, setIsApplePlatform] = useState(false);
+  useEffect(() => {
+    setIsApplePlatform(/Mac|iPhone|iPad|iPod/.test(navigator.userAgent));
+  }, []);
+  const payDisabled = !consent || !email.includes("@") || step === "paying";
+  const paywallSeen = useRef(false);
+  useEffect(() => {
+    if (step === "checkout" && !paywallSeen.current) {
+      paywallSeen.current = true;
+      logEvent("paywall_view", { spread });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+  // Našeptávač e-mailových domén + oprava překlepů (v1 §3.3.2)
+  const emailSuggestion = (() => {
+    const at = email.indexOf("@");
+    if (at < 1) return null;
+    const local = email.slice(0, at);
+    const dom = email.slice(at + 1).toLowerCase();
+    const TYPOS: Record<string, string> = {
+      "gmial.com": "gmail.com", "gmal.com": "gmail.com", "gamil.com": "gmail.com",
+      "gmail.cz": "gmail.com", "semzam.cz": "seznam.cz", "seznma.cz": "seznam.cz",
+      "sezam.cz": "seznam.cz", "centurm.cz": "centrum.cz",
+    };
+    if (TYPOS[dom]) return `${local}@${TYPOS[dom]}`;
+    const KNOWN = ["seznam.cz", "email.cz", "gmail.com", "centrum.cz", "atlas.cz"];
+    if (dom && !dom.includes(".")) {
+      const hit = KNOWN.find((k) => k.startsWith(dom));
+      if (hit) return `${local}@${hit}`;
+    }
+    return null;
+  })();
 
   useEffect(() => {
     setCreditsState(getCredits());
@@ -100,7 +135,7 @@ function FlowInner() {
     // Má kredit z balíčku → bez platby. Pokud už známe e-mail, jdeme rovnou
     // do rituálu; jinak zobrazíme odlehčený checkout jen pro e-mail a souhlas
     // (bez platebních tlačítek). Kredit se strhne až při vydání výkladu (7.5).
-    if (getCredits() > 0 && getEmail()) {
+    if (CREDITS_ENABLED && getCredits() > 0 && getEmail()) {
       await startRitual(cls.spread);
       return;
     }
@@ -110,7 +145,7 @@ function FlowInner() {
   async function pay() {
     if (!consent || !email.includes("@")) return;
     // Má kredit z balíčku → bez platby
-    if (credits > 0) {
+    if (CREDITS_ENABLED && credits > 0) {
       persistEmail(email);
       await startRitual(spread);
       return;
@@ -128,6 +163,10 @@ function FlowInner() {
       setStep("payment_failed");
       return;
     }
+    logEvent("payment_success", {
+      spread,
+      product: isFirst ? "intro" : "single",
+    });
     persistEmail(email);
     if (isFirst) setFirstDone();
     else {
@@ -256,7 +295,7 @@ function FlowInner() {
         ) : (
           <>
             <h1 className="font-display text-4xl font-semibold text-cream">
-              Tvoje karty jsou připravené.
+              Nomi na tebe čeká.
             </h1>
             <p className="mt-4 text-cream-dim">
               Tvoje otázka: „{question}"
@@ -293,7 +332,7 @@ function FlowInner() {
 
             <div className="mt-8 rounded-2xl border border-gold-dim/40 bg-night-soft/60 p-6">
               <p className="font-display text-2xl text-gold-soft">
-                {credits > 0
+                {CREDITS_ENABLED && credits > 0
                   ? "Výklad z tvého balíčku"
                   : isFirst
                     ? "První výklad za 29 Kč (běžně 49 Kč)"
@@ -321,9 +360,18 @@ function FlowInner() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      onBlur={() => email.includes("@") && setEmailConfirmed(true)}
+                      onBlur={() => { if (email.includes("@")) { setEmailConfirmed(true); logEvent("email_entered", {}); } }}
                       className="mt-2 w-full rounded-xl border border-night-line bg-night-deep/60 p-3 text-cream focus:border-gold"
                     />
+                    {emailSuggestion && (
+                      <button
+                        type="button"
+                        onClick={() => setEmail(emailSuggestion)}
+                        className="mt-2 text-xs text-gold-soft underline underline-offset-2"
+                      >
+                        Myslela jsi {emailSuggestion}?
+                      </button>
+                    )}
                     <p className="mt-2 text-xs text-cream-dim">
                       Sem ti výklad uložíme, ať se k němu můžeš kdykoli vrátit.
                       A každé ráno ti pošleme kartu dne zdarma. Žádné heslo,
@@ -337,7 +385,7 @@ function FlowInner() {
                 <input
                   type="checkbox"
                   checked={consent}
-                  onChange={(e) => setConsent(e.target.checked)}
+                  onChange={(e) => { setConsent(e.target.checked); if (e.target.checked) logEvent("consent_checked", {}); }}
                   className="mt-0.5 h-4 w-4 accent-gold"
                   required
                 />
@@ -349,7 +397,7 @@ function FlowInner() {
               </label>
 
               <div className="mt-6 grid gap-3">
-                {credits > 0 ? (
+                {CREDITS_ENABLED && credits > 0 ? (
                   <button
                     onClick={pay}
                     disabled={!consent || !email.includes("@")}
@@ -358,21 +406,40 @@ function FlowInner() {
                     Použít výklad z balíčku
                   </button>
                 ) : (
-                  [" Pay", "G Pay", "Zaplatit kartou"].map((label) => (
+                  <>
+                    {isApplePlatform ? (
+                      <button
+                        onClick={pay}
+                        disabled={payDisabled}
+                        className="rounded-xl bg-black px-6 py-3.5 font-semibold text-white hover:bg-neutral-900 disabled:opacity-60 disabled:saturate-[.35]"
+                      >
+                        {step === "paying" ? "Zpracovává se…" : "Apple Pay"}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={pay}
+                        disabled={payDisabled}
+                        className="rounded-xl border border-night-line bg-white px-6 py-3.5 font-semibold text-neutral-900 hover:bg-neutral-100 disabled:opacity-60 disabled:saturate-[.35]"
+                      >
+                        {step === "paying" ? "Zpracovává se…" : "Google Pay"}
+                      </button>
+                    )}
                     <button
-                      key={label}
                       onClick={pay}
-                      disabled={!consent || !email.includes("@") || step === "paying"}
-                      className="rounded-xl bg-cream px-6 py-3.5 font-medium text-night hover:bg-white disabled:opacity-40"
+                      disabled={payDisabled}
+                      className="rounded-xl bg-gold px-6 py-3.5 font-semibold text-night hover:opacity-90 disabled:opacity-60 disabled:saturate-[.35]"
                     >
-                      {step === "paying" ? "Zpracovává se…" : label}
+                      {step === "paying" ? "Zpracovává se…" : "Zaplatit kartou"}
                     </button>
-                  ))
+                  </>
                 )}
               </div>
+              {!consent && (
+                <p className="mt-2 text-xs text-gold-soft">Nejdřív potvrď souhlas výše.</p>
+              )}
 
               <p className="mt-5 text-xs text-cream-dim">
-                {credits > 0
+                {CREDITS_ENABLED && credits > 0
                   ? `Výklady generuje AI kartářka Nomi. Po vydání výkladu ti ${vykladu(credits - 1)}.`
                   : "Výklady generuje AI kartářka Nomi. Pokud ti první výklad nic nedá, napiš nám a 29 Kč ti vrátíme."}
               </p>
@@ -460,7 +527,7 @@ function FlowInner() {
               // ne zpět na otázce. Bez tvrdé navigace, stream běží dál.
               window.history.replaceState(null, "", `/vyklad/${id}`);
             }}
-            onDone={() => setStep("paths")}
+            onDone={() => { logEvent("reading_completed", { spread }); setStep("paths"); }}
             onError={() => {
               // Kredit se NIKDY nestrhne za nevydaný výklad
               if (creditUsed) {

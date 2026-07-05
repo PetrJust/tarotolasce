@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
     "",
     "/karta-dne",
+    "/kontakt",
     "/vyznam-karet",
     "/cenik",
     "/obchodni-podminky",

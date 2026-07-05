@@ -38,7 +38,7 @@ export function setEmail(email: string) {
   setCookie("tol_email", email);
 }
 
-/* --- Cesta ke průvodkyni: počítadla výkladů a dárek --- */
+/* --- Cesta k průvodkyni: počítadla výkladů a dárek --- */
 // Počet dokončených placených výkladů celkem (pro odměnu po 10.)
 export function getReadingCount(): number {
   return parseInt(getCookie("tol_reads") ?? "0", 10) || 0;

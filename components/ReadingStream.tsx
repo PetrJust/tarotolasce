@@ -23,6 +23,7 @@ export default function ReadingStream({
 }) {
   const [text, setText] = useState("");
   const [started, setStarted] = useState(false);
+  const [doneLocal, setDoneLocal] = useState(false);
   const ran = useRef(false);
   const endRef = useRef<HTMLDivElement | null>(null);
   // Auto-scroll sleduje text, ale ruční scroll uživatelky má vždy přednost.
@@ -99,6 +100,7 @@ export default function ReadingStream({
           finished = true;
           onDone?.(full);
         }
+        setDoneLocal(true); // 6.3: kurzor po dokončení zmizí
       } catch {
         onError?.();
       }
@@ -116,9 +118,11 @@ export default function ReadingStream({
   }
 
   return (
-    <div className="prose-tarot mx-auto max-w-xl py-8 text-lg leading-relaxed text-cream">
+    <div className="prose-tarot mx-auto max-w-xl whitespace-pre-line py-8 text-lg leading-relaxed text-cream">
       {text}
-      <span className="ml-0.5 inline-block h-5 w-0.5 animate-pulse bg-gold align-middle" />
+      {!doneLocal && (
+        <span className="ml-0.5 inline-block h-5 w-0.5 animate-pulse bg-gold align-middle" />
+      )}
       <div ref={endRef} />
     </div>
   );

@@ -1,4 +1,5 @@
 "use client";
+import { CREDITS_ENABLED } from "@/lib/flags";
 // Mock nákup balíčku: projde přes /api/checkout a připíše kredity do cookie.
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -52,11 +53,17 @@ export default function BuyPack({
     <div className="mt-5">
       <button
         onClick={buy}
-        disabled={state === "paying"}
+        disabled={!CREDITS_ENABLED || state === "paying"}
         className="w-full rounded-xl border border-gold-dim px-5 py-3 font-medium text-gold-soft hover:border-gold disabled:opacity-50"
       >
-        {state === "paying" ? "Zpracovává se…" : "Koupit balíček"}
+        {!CREDITS_ENABLED ? "Brzy" : state === "paying" ? "Zpracovává se…" : "Koupit balíček"}
       </button>
+      {!CREDITS_ENABLED && (
+        <p className="mt-2 text-center text-xs text-cream-dim">
+          Balíčky spustíme, jakmile bude hotový účet s kreditem. Jednotlivé
+          výklady fungují už teď.
+        </p>
+      )}
       {state === "done" && (
         <p className="mt-2 text-center text-xs text-gold-soft">
           Hotovo, {vykladu(balance)}.

@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getCredits } from "@/lib/clientState";
+import { CREDITS_ENABLED } from "@/lib/flags";
 import { pocetVykladu } from "@/lib/declension";
 
 export default function CreditBadge() {
@@ -23,6 +24,7 @@ export default function CreditBadge() {
     };
   }, []);
 
+  if (!CREDITS_ENABLED) return null; // ledger ještě nestojí (zadání paleta §4)
   if (!credits || credits <= 0) return null;
   return (
     <Link

@@ -1,5 +1,5 @@
 export const PRICES = {
-  first: 29,
+  first: parseInt(process.env.NEXT_PUBLIC_INTRO_PRICE_CZK ?? "29", 10), // A/B 29 vs 19: konfigurace, ne konstanta (v1 §1)
   single: 49,
   pack5: 199,
   pack20: 599,

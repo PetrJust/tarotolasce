@@ -1,4 +1,5 @@
 "use client";
+import { logEvent } from "@/lib/analytics";
 // Hodnocení výkladu po jeho dočtení. Klidné, bez nátlaku, dá se přeskočit.
 // „Jak ti výklad sedl?" + palec nahoru/dolů + volitelný komentář.
 import { useState } from "react";
@@ -9,6 +10,7 @@ export default function ReadingFeedback({ readingId }: { readingId: string }) {
   const [sent, setSent] = useState(false);
 
   async function send(r: "up" | "down", withComment: boolean) {
+    logEvent("feedback_submitted", { rating: r, withComment });
     setRating(r);
     await fetch("/api/feedback", {
       method: "POST",
