@@ -1,0 +1,21 @@
+import Link from "next/link";
+
+export default function NotFound() {
+  return (
+    <div className="flex min-h-[60dvh] flex-col items-center justify-center gap-5 py-16 text-center">
+      <h1 className="font-display text-4xl font-semibold text-body">
+        Tahle karta v balíčku není.
+      </h1>
+      <p className="max-w-md text-body-dim">
+        Stránka, kterou hledáš, neexistuje nebo se přestěhovala. Zkus to z
+        úvodní stránky.
+      </p>
+      <Link
+        href="/"
+        className="rounded-xl bg-gold px-6 py-3 font-medium text-night hover:bg-gold-soft"
+      >
+        Zpět na úvod
+      </Link>
+    </div>
+  );
+}

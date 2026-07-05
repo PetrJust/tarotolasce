@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  /* ===== Jediný zdroj pravdy pro "povrchové" barvy (viz lib/palette.ts) =====
+     Rozhodnutí zakladatele: CELÁ aplikace je světlá - landing, ceník,
+     rituál, vějíř, výklad i historie. Tmavá noční fialová zůstává JEN
+     v patičce (Footer.tsx má vlastní natvrdo tmavé barvy, nezávislé na
+     téhle proměnné vrstvě). Komponenty používají sémantické třídy
+     (bg-surface, text-body, text-accent…), NE bg-night-soft/70 apod. -
+     díky tomu nemůže žádná opacity varianta „propadnout" a zůstat tmavá,
+     jak se stalo předtím. */
+  --surface-1: rgba(255, 255, 255, 0.78);
+  --surface-2: rgba(255, 255, 255, 0.9);
+  --surface-border: #EBD3F2;
+  --text-primary: #3A1145;
+  --text-dim: #7A5C8A;
+  --accent: #C2338F;
+  --accent-soft: #B0397E;
+  --accent-dim: #E7A8D6;
+  --input-bg: #FFFFFF;
+  --input-text: #3A1145;
+  --input-placeholder: #9A7FA8;
+}
+
+body {
+  background: linear-gradient(180deg, #FFF6FB 0%, #FBEDF8 45%, #F3E8FF 100%);
+  color: var(--text-primary);
+  min-height: 100dvh;
+}
+
+/* Sémantické třídy, které komponenty používají místo natvrdo bg-night-*.
+   Fungují automaticky správně v obou polohách, protože čtou proměnné výše. */
+.bg-surface { background: var(--surface-1); }
+.bg-surface-2 { background: var(--surface-2); }
+.border-surface { border-color: var(--surface-border); }
+.text-body { color: var(--text-primary); }
+.text-body-dim { color: var(--text-dim); }
+.text-accent { color: var(--accent); }
+.text-accent-soft { color: var(--accent-soft); }
+.border-accent { border-color: var(--accent); }
+.border-accent-dim { border-color: var(--accent-dim); }
+
+textarea, input {
+  background: var(--input-bg);
+  color: var(--input-text);
+  border-color: var(--surface-border);
+}
+textarea::placeholder, input::placeholder {
+  color: var(--input-placeholder);
+}
+
+
+::selection {
+  background: rgba(241, 91, 181, 0.4);
+}
+
+a,
+button {
+  outline-offset: 3px;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #d4af37;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.prose-tarot p + p {
+  margin-top: 1em;
+}
+
+
+/* Display serif: pod ~28px drží tahy (levné Android displeje), viz zadání v1 §12 */
+.font-display { font-weight: 600; }
+
+/* ===== Světlá poloha (rozhodnutí zakladatele nahrazuje §2 zadání paleta) =====
+   Landing, ceník, karta dne, významy karet, historie, kontakt, právní
+   stránky I rituál/vějíř/výklad: všude hravá růžovo-lila. Tmavá zůstává
+   jen ve Footeru (vlastní natvrdo tmavé barvy, nezávislé na téhle vrstvě).
+   Krizové obrazovky beze změny (vlastní bg-night-deep, nezávislé na téhle
+   vrstvě). Proměnné jsou už světlé z :root; tahle třída dnes hlavně drží
+   vlastní pozadí přes celý viewport (viz ::before níže). */
+.light-surface {
+  position: relative;
+  color: var(--text-primary);
+  min-height: 100vh;
+  --surface-1: rgba(255, 255, 255, 0.78);
+  --surface-2: rgba(255, 255, 255, 0.9);
+  --surface-border: #EBD3F2;
+  --text-primary: #3A1145;
+  --text-dim: #7A5C8A;
+  --accent: #C2338F;
+  --accent-soft: #B0397E;
+  --accent-dim: #E7A8D6;
+  --input-bg: #FFFFFF;
+  --input-text: #3A1145;
+  --input-placeholder: #9A7FA8;
+}
+.light-surface::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, #FFF6FB 0%, #FBEDF8 45%, #F3E8FF 100%);
+}
