@@ -8,6 +8,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { CardBack, CardFace } from "./TarotCard";
+import { CARD_BY_ID } from "@/lib/cards";
 import { useShuffleSound } from "./useShuffleSound";
 import { vyberKaret } from "@/lib/declension";
 
@@ -559,7 +560,14 @@ function Spread({
                       transition={{ duration: reducedMotion ? 0.001 : 0.45, ease: "easeInOut" }}
                     >
                       <CardFace
-                        card={{ name: card.name, symbol: card.symbol ?? symbolFor(card.name) }}
+                        card={
+                          CARD_BY_ID[card.cardId] ?? {
+                            id: card.cardId,
+                            name: card.name,
+                            arcana: "major",
+                            symbol: card.symbol ?? symbolFor(card.name),
+                          }
+                        }
                         className="h-full w-full drop-shadow-card"
                       />
                     </motion.div>
